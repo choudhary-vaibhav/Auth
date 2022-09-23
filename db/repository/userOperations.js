@@ -17,5 +17,10 @@ module.exports = {
     find(userEmail){
         const promise = UserModel.findOne({email:userEmail}).exec();
         return promise;
+    },
+
+    findById(userId){
+        const promise = UserModel.findOne({_id:userId}).exec();
+        return promise;
     }
 }

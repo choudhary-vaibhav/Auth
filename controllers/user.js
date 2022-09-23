@@ -1,11 +1,12 @@
 const repo = require('../db/repository/userOperations');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
 
     register(request, response){
         const userObject = request.body;
-        console.log(userObject);
+        //console.log(userObject);
         
         const saltRounds = 10;
         bcrypt.genSalt(saltRounds, (err, salt)=>{
@@ -27,16 +28,30 @@ module.exports = {
 
     async login(request, response){
         const userObject = request.body;
-        console.log(userObject);
+        //console.log(userObject);
 
         const doc = await repo.find(userObject.email);
         try{
             if(doc && doc.email){
                 bcrypt.compare(userObject.password, doc.password, (err, result)=>{
-                    if(result){
-                        response.status(200).json({message:'userObject: ', doc});
-                    }else{
+                    if(result == true){
+                        //jwt token
+                        const token = jwt.sign({id:doc.id}, process.env.JWT_SECRET, {expiresIn: '60000'});
+            
+                        response.status(200).json({
+                            user:{
+                            id:doc._id,
+                            name:doc.name,
+                            email:doc.email
+                            },
+                            message: "Login Successful",
+                            accessToken: token
+                        });
+
+                    }else if(result == false){
                         response.status(404).json({message:'Invalid Password! '});
+                    }else{
+                        response.status(500).json({message:'Internal Server Error! ', err});
                     }
                 })
             }else{
@@ -45,5 +60,9 @@ module.exports = {
         }catch(err){
             response.status(500).json({message:'Some DB Error! ', err});
         }
+    },
+
+    profile(request, response){
+        response.status(200).json({message:'You have the authorisation to see this page!'});
     }
 }

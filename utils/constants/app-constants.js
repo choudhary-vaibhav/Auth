@@ -4,6 +4,7 @@ module.exports = {
         USER : {
             LOGIN : '/login',
             REGISTER : '/register',
+            PROFILE : '/profile'
         },
     }
 }
