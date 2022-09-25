@@ -9,10 +9,12 @@ module.exports = {
         //console.log(userObject);
         
         const saltRounds = 10;
+        //generating a salt
         bcrypt.genSalt(saltRounds, (err, salt)=>{
             if(err){
                 response.status(403).json({message:'Error in user registration! '});
             }else{
+                //generating the hash
                 bcrypt.hash(userObject.password, salt, (err, hash)=>{
                     if(err){
                         response.status(403).json({message:'Error in user registration! '});
@@ -35,7 +37,7 @@ module.exports = {
             if(doc && doc.email){
                 bcrypt.compare(userObject.password, doc.password, (err, result)=>{
                     if(result == true){
-                        //jwt token
+                        //jwt token if the password matches
                         const token = jwt.sign({id:doc.id}, process.env.JWT_SECRET, {expiresIn: '60000'});
             
                         response.status(200).json({
@@ -63,6 +65,7 @@ module.exports = {
     },
 
     profile(request, response){
+        //control will reach here only if the middleware verifies the JWT token to be valid
         response.status(200).json({message:'You have the authorisation to see this page!'});
     }
 }

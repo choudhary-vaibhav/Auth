@@ -3,7 +3,7 @@ const app = express();
 
 require('dotenv').config();
 
-app.use(express.json());
+app.use(express.json());  //middleware to parse json
 app.use(express.urlencoded());
 
 app.use('/',require('./routes/user')); //dynamic routing

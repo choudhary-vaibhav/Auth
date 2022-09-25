@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const repo = require('../../db/repository/userOperations');
 
 const verifyToken = (request, response, next) => {
+    //if the request has the data of authorization header and then checking if it is JWT
     if(request.headers && request.headers.authorization && request.headers.authorization.split(' ')[0] === 'JWT'){
         jwt.verify(request.headers.authorization.split(' ')[1], process.env.JWT_SECRET, (err, decode) =>{
             if(err){
